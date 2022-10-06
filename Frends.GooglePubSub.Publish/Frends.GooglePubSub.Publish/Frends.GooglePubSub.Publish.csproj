@@ -2,8 +2,8 @@
 
   <PropertyGroup>
 	<TargetFrameworks>net6.0</TargetFrameworks>
-    <authors>HiQ Finland</authors>
-    <copyright>HiQ Finland</copyright>
+    <authors>Frends</authors>
+    <copyright>Frends</copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/FrendsPlatform/Frends.GooglePubSub</PackageProjectUrl>
     <IncludeSource>true</IncludeSource>

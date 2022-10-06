@@ -9,7 +9,7 @@ Returns a boolean depicting if the input text matches with the specified regular
 
 ## Installing
 
-You can install the Task via frends UI Task View or you can find the NuGet package from the following NuGet feed
+You can install the Task via Frends UI Task View or you can find the NuGet package from the following NuGet feed
 https://www.myget.org/F/frends-tasks/api/v2.
 
 ## Building
@@ -18,14 +18,21 @@ Clone a copy of the repository
 
 `git clone https://github.com/FrendsPlatform/Frends.GooglePubSub.git`
 
-Rebuild the project
+### Build the project
 
-`dotnet build`
+```
+cd Frends.GooglePubSub.Publish
+dotnet build
+```
 
-Run tests
+### Run tests
 
-`dotnet test`
+```
+cd Frends.GooglePubSub.Publish.Tests
+docker-compose up -d
+dotnet test
+```
 
-Create a NuGet package
+### Create a NuGet package
 
 `dotnet pack --configuration Release`
