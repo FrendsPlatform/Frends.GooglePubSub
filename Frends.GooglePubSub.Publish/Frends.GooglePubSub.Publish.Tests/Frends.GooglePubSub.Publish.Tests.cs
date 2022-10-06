@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Frends.GooglePubSub.Publish.Definitions;
+using System.Threading;
 
 namespace Frends.GooglePubSub.Tests;
 
@@ -41,7 +42,7 @@ class Tests
                     OrderingKey = ""
                 }
             }
-        });
+        }, CancellationToken.None);
             
         Assert.AreEqual(0, result.Errors.Count, string.Join(Environment.NewLine, result.Errors.Select(e => e.Error)));
         Assert.AreEqual(2, result.MessageIDs.Count);
