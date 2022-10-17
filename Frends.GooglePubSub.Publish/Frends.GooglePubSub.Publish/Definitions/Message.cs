@@ -5,38 +5,6 @@ using System.Linq;
 namespace Frends.GooglePubSub.Publish.Definitions;
 
 /// <summary>
-/// Message attribute.
-/// </summary>
-public class MessageAttribute
-{
-    /// <summary>
-    /// Default ctor.
-    /// </summary>
-    public MessageAttribute()
-    { }
-
-    /// <summary>
-    /// Ctor with key and value params.
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    public MessageAttribute(string key, string value)
-    {
-        Key = key;
-        Value = value;
-    }
-
-    /// <summary>
-    /// Attribute key.
-    /// </summary>
-    public string Key { get; set; }
-
-    /// <summary>
-    /// Attribute value.
-    /// </summary>
-    public string Value { get; set; }
-}
-/// <summary>
 /// Message to be sent to Google PubSub.
 /// </summary>
 public class Message
