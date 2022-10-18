@@ -45,7 +45,7 @@ public class Input
     /// </summary>
     /// <example>true</example>
     [DefaultValue(false)]
-    public bool EnableMessageOrdering { get; set; } = true;
+    public bool EnableMessageOrdering { get; set; }
 
     /// <summary>
     /// One or more messages to publish to the topic.
