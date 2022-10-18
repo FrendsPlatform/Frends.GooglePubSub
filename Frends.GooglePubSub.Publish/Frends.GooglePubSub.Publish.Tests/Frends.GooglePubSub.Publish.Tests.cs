@@ -48,5 +48,36 @@ class Tests
         Assert.AreEqual(2, result.MessageIDs.Count);
         foreach(var messageID in result.MessageIDs) Assert.NotNull(messageID);
     }
+
+    [Test]
+    public async Task PublishWithOrderingNumberTest()
+    {
+        var result = await Publish.GooglePubSub.Publish(new Input
+        {
+            ProjectID = TestProjectId,
+            TopicID = TestTopicId,
+            ServiceAccountKeyJSON = string.Empty, // fileContent,
+            EnableMessageOrdering = true,
+            Messages = new[]
+            {
+                new Message
+                {
+                    Data = "Hello, world!",
+                    Attributes = new [] { new MessageAttribute("myCustomAttr1", "myAttrValue1") },
+                    OrderingKey = "key1"
+                },
+                new Message
+                {
+                    Data = "Hello, world 2!",
+                    Attributes = new [] { new MessageAttribute("myCustomAttr1", "myAttrValue1") },
+                    OrderingKey = "key2"
+                }
+            }
+        }, CancellationToken.None);
+
+        Assert.AreEqual(0, result.Errors.Count, string.Join(Environment.NewLine, result.Errors.Select(e => e.Error)));
+        Assert.AreEqual(2, result.MessageIDs.Count);
+        foreach (var messageID in result.MessageIDs) Assert.NotNull(messageID);
+    }
 }
  

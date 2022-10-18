@@ -50,6 +50,7 @@ public static class GooglePubSub
         var clientBuilder = new PublisherClientBuilder();
         clientBuilder.TopicName = new TopicName(input.ProjectID, input.TopicID);
         clientBuilder.EmulatorDetection = Google.Api.Gax.EmulatorDetection.EmulatorOrProduction;
+        clientBuilder.Settings = new PublisherClient.Settings { EnableMessageOrdering = input.EnableMessageOrdering };
         if (!string.IsNullOrEmpty(input.ServiceAccountKeyJSON))
         {
             using (var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(input.ServiceAccountKeyJSON)))
@@ -58,7 +59,7 @@ public static class GooglePubSub
                 clientBuilder.Credential = credential;
             }
         }
-            
+
         return clientBuilder.Build();
     }
 }

@@ -41,6 +41,13 @@ public class Input
     public string ServiceAccountKeyJSON { get; set; }
 
     /// <summary>
+    /// Whether to enable or disable message ordering using an ordering key.
+    /// </summary>
+    /// <example>true</example>
+    [DefaultValue(false)]
+    public bool EnableMessageOrdering { get; set; }
+
+    /// <summary>
     /// One or more messages to publish to the topic.
     /// </summary>
     public Message[] Messages { get; set; } = Array.Empty<Message>();
