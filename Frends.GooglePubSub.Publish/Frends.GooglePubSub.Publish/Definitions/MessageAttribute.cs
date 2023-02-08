@@ -20,10 +20,12 @@ public class MessageAttribute
     /// <summary>
     /// Attribute key.
     /// </summary>
+    /// <example>foo</example>
     public string Key { get; set; }
 
     /// <summary>
     /// Attribute value.
     /// </summary>
+    /// <example>bar</example>
     public string Value { get; set; }
 }

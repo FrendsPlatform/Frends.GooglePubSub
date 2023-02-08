@@ -1,7 +1,7 @@
 # Frends.GooglePubSub.Publish
+Frends Task for publishing messages on Google Cloud PubSub service.
 
 [![Frends.GooglePubSub.Publish Main](https://github.com/FrendsPlatform/Frends.GooglePubSub/actions/workflows/Publish_build_and_test_on_main.yml/badge.svg)](https://github.com/FrendsPlatform/Frends.GooglePubSub/actions/workflows/Publish_build_and_test_on_main.yml)
-![MyGet](https://img.shields.io/myget/frends-tasks/v/Frends.GooglePubSub.Publish?label=NuGet)
  ![GitHub](https://img.shields.io/github/license/FrendsPlatform/Frends.GooglePubSub?label=License)
  ![Coverage](https://app-github-custom-badges.azurewebsites.net/Badge?key=FrendsPlatform/Frends.GooglePubSub|Frends.GooglePubSub.Publish|main)
 
@@ -9,8 +9,7 @@ Returns a boolean depicting if the input text matches with the specified regular
 
 ## Installing
 
-You can install the Task via Frends UI Task View or you can find the NuGet package from the following NuGet feed
-https://www.myget.org/F/frends-tasks/api/v2.
+You can install the Task via Frends UI Task View.
 
 ## Building
 
