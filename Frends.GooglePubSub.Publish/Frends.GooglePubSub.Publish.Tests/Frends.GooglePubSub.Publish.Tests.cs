@@ -80,4 +80,3 @@ class Tests
         foreach (var messageID in result.MessageIDs) Assert.NotNull(messageID);
     }
 }
- 

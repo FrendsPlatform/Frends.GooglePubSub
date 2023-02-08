@@ -50,5 +50,15 @@ public class Input
     /// <summary>
     /// One or more messages to publish to the topic.
     /// </summary>
+    /// <example>
+    /// [
+    ///     [
+    ///         { "attr1", "value1" },
+    ///         { "attr2", "value2" }
+    ///     ],
+    ///     "foo",
+    ///     "bar"
+    /// ]
+    /// </example>
     public Message[] Messages { get; set; } = Array.Empty<Message>();
 }
