@@ -59,7 +59,7 @@ internal class UnitTests
     [Test]
     public async Task ConsumeWithAck()
     {
-        var publishMessages = await Helper.Publish(input, TestTopicId, messages, default);
+        var publishMessages = Helper.Publish(input, TestTopicId, messages, default);
         var result = await GooglePubSub.Consume(input, options, default);
         Assert.AreEqual(publishMessages.Count, result.Messages.Count);
     }
@@ -67,14 +67,14 @@ internal class UnitTests
     [Test]
     public async Task ConsumeWithNAck()
     {
-        var publishMessages = await Helper.Publish(input, TestTopicId, messages, default);
+        var publishMessages = Helper.Publish(input, TestTopicId, messages, default);
 
         var result = await GooglePubSub.Consume(input, options, default);
         Assert.AreEqual(publishMessages.Count, result.Messages.Count);
 
         var topicID = "my-another-topic";
         input.SubscriptionID = "my-another-subscription";
-        publishMessages = await Helper.Publish(input, topicID, messages, default);
+        publishMessages = Helper.Publish(input, topicID, messages, default);
 
         result = await GooglePubSub.Consume(input, options, default);
         Assert.AreEqual(publishMessages.Count, result.Messages.Count);
@@ -93,7 +93,7 @@ internal class UnitTests
     [Test]
     public async Task ConsumeWithoutAcknowledge()
     {
-        await Helper.Publish(input, TestTopicId, messages, default);
+        Helper.Publish(input, TestTopicId, messages, default);
 
         options.MaxResults = 1;
         options.Acknowledge = false;

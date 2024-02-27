@@ -4,22 +4,19 @@ using Google.Apis.Auth.OAuth2;
 using Google.Cloud.PubSub.V1;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Frends.GooglePubSub.Consume.Definitions;
 
 internal class Helper
 {
-    internal static async Task<List<string>> Publish(Input input, string topicID, Message[] messages, CancellationToken cancellationToken)
+    internal static List<string> Publish(Input input, string topicID, Message[] messages, CancellationToken cancellationToken)
     {
         var client = CreatePublisherClient(input, topicID);
         var messageIds = new List<string>();
 
-        foreach (var message in messages)
-        {
-            var msgId = await client.PublishAsync(message.ToPubSubMessage());
-            messageIds.Add(msgId);
-        }
+        foreach (var msgId in messages.Select(async p => await client.PublishAsync(p.ToPubSubMessage())))
+            messageIds.Add(msgId.Result);
 
         client.ShutdownAsync(cancellationToken).Wait(cancellationToken);
         return messageIds;
