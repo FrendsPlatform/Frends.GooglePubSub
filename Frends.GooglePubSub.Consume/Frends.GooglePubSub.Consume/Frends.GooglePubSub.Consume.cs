@@ -10,6 +10,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Frends.GooglePubSub.Consume.Definitions;
+using Google.Apis.Auth.OAuth2;
+using System.IO;
+using Grpc.Core;
 
 /// <summary>
 /// Google PubSub Task.
@@ -28,28 +31,49 @@ public static class GooglePubSub
     {
         var receivedMessages = new List<OutputMessage>();
 
-        SubscriberServiceApiClient subscriberClient = await new SubscriberServiceApiClientBuilder
-        {
-            EmulatorDetection = EmulatorDetection.EmulatorOrProduction,
-        }.BuildAsync(cancellationToken).ConfigureAwait(false);
+        var subscriberClient = await CreateSubscriberClient(input, cancellationToken);
 
         var subscriptionName = new SubscriptionName(input.ProjectID, input.SubscriptionID);
 
         var callSettings = new CallSettings(
             cancellationToken,
-            Expiration.FromTimeout(TimeSpan.FromSeconds(options.Expiration)),
+            Expiration.FromTimeout(TimeSpan.FromSeconds(options.Timeout)),
             retry: null,
             headerMutation: null,
             writeOptions: null,
             propagationToken: null);
 
-        var response = await subscriberClient.PullAsync(subscriptionName, maxMessages: options.MaxResults, callSettings).ConfigureAwait(false);
+        try
+        {
+            var response = await subscriberClient.PullAsync(subscriptionName, maxMessages: options.MaxResults, callSettings).ConfigureAwait(false);
 
-        receivedMessages.AddRange(response.ReceivedMessages.Select(p => new OutputMessage(p.Message)));
+            receivedMessages.AddRange(response.ReceivedMessages.Select(p => new OutputMessage(p.Message)));
 
-        if (options.Acknowledge && receivedMessages.Any())
-            await subscriberClient.AcknowledgeAsync(subscriptionName, response.ReceivedMessages.Select(msg => msg.AckId), cancellationToken).ConfigureAwait(false);
+            if (options.Acknowledge && receivedMessages.Any())
+                await subscriberClient.AcknowledgeAsync(subscriptionName, response.ReceivedMessages.Select(msg => msg.AckId), cancellationToken).ConfigureAwait(false);
+        }
+        catch (RpcException ex) when (ex.StatusCode == StatusCode.DeadlineExceeded)
+        {
+            throw new ArgumentException($"DeadlineExceeded error while pulling messages from subscription: {ex.Message}.\nConsider increasing the timeout parameters.");
+        }
 
         return new Result(receivedMessages);
+    }
+
+    private static async Task<SubscriberServiceApiClient> CreateSubscriberClient(Input input, CancellationToken cancellationToken)
+    {
+        var clientBuilder = new SubscriberServiceApiClientBuilder
+        {
+            EmulatorDetection = EmulatorDetection.EmulatorOrProduction,
+        };
+
+        if (!string.IsNullOrEmpty(input.ServiceAccountKeyJSON))
+        {
+            using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(input.ServiceAccountKeyJSON));
+            var credential = ServiceAccountCredential.FromServiceAccountData(stream);
+            clientBuilder.Credential = credential;
+        }
+
+        return await clientBuilder.BuildAsync(cancellationToken).ConfigureAwait(false);
     }
 }

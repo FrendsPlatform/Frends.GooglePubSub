@@ -32,9 +32,9 @@ internal class UnitTests
 
         options = new Options
         {
+            Timeout = 1,
             Acknowledge = true,
-            MaxResults = 20,
-            Expiration = 1,
+            MaxResults = 2,
         };
 
         messages = new[]
@@ -86,6 +86,7 @@ internal class UnitTests
     [Test]
     public async Task ConsumeWithNoMessages()
     {
+        options.MaxResults = 1;
         var result = await GooglePubSub.Consume(input, options, default);
         Assert.AreEqual(0, result.Messages.Count);
     }

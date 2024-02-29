@@ -8,11 +8,12 @@ using System.ComponentModel;
 public class Options
 {
     /// <summary>
-    /// Expiration determines how long Task will wait for messages if there aren't any.
+    /// Sets the timeout for the pull request to PubSub.
+    /// Too short timeout can lead to DeadlineExceeded exception.
     /// </summary>
-    /// <example>30</example>
-    [DefaultValue(1)]
-    public int Expiration { get; set; }
+    /// <example>20</example>
+    [DefaultValue(20)]
+    public int Timeout { get; set; }
 
     /// <summary>
     /// Maximum amount of messages that is pulled from the PubSub.
