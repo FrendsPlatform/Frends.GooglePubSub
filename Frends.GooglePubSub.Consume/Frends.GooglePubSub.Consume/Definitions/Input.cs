@@ -3,7 +3,7 @@
 using System.ComponentModel;
 
 /// <summary>
-/// Publish task input.
+/// Consume Task input.
 /// </summary>
 public class Input
 {

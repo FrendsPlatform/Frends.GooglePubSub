@@ -5,7 +5,7 @@ using Google.Protobuf;
 using System.Linq;
 
 /// <summary>
-/// Message to be sent to Google PubSub.
+/// Message consumed from Google PubSub.
 /// </summary>s
 public class Message
 {

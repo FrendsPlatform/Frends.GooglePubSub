@@ -13,7 +13,7 @@ public class Result
     }
 
     /// <summary>
-    /// IDs of successfully sent messages.
+    /// Messages consumed from Google PubSub.
     /// </summary>
     /// <example>[ { "Hello world!", { "myCustomAttr1": "myAttrValue1" }, "271", "2024-02-27T07:53:25Z", "key" } ]</example>
     public List<OutputMessage> Messages { get; internal set; }
