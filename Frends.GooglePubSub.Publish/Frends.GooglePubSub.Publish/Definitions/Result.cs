@@ -19,6 +19,7 @@ public class Result
     /// Error information when the overall operation fails (ThrowErrorOnFailure is false).
     /// Null when Success is true.
     /// </summary>
+    /// <example>{ "Message": "An error occurred.", "AdditionalInfo": {} }</example>
     public Error Error { get; internal set; }
 
     /// <summary>
