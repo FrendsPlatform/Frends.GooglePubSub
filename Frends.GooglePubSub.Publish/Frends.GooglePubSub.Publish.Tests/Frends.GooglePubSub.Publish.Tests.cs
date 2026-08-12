@@ -42,7 +42,7 @@ class Tests
                     OrderingKey = ""
                 }
             }
-        }, CancellationToken.None);
+        }, new Options(), CancellationToken.None);
             
         Assert.AreEqual(0, result.Errors.Count, string.Join(Environment.NewLine, result.Errors.Select(e => e.Error)));
         Assert.AreEqual(2, result.MessageIDs.Count);
@@ -73,7 +73,7 @@ class Tests
                     OrderingKey = "key2"
                 }
             }
-        }, CancellationToken.None);
+        }, new Options(), CancellationToken.None);
 
         Assert.AreEqual(0, result.Errors.Count, string.Join(Environment.NewLine, result.Errors.Select(e => e.Error)));
         Assert.AreEqual(2, result.MessageIDs.Count);

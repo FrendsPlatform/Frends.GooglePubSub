@@ -1,4 +1,5 @@
 ﻿using Frends.GooglePubSub.Publish.Definitions;
+using Frends.GooglePubSub.Publish.Helpers;
 using Google.Apis.Auth.OAuth2;
 using Google.Cloud.PubSub.V1;
 using System;
@@ -31,9 +32,12 @@ public static class GooglePubSub
     /// [Documentation](https://tasks.frends.com/tasks/frends-tasks/Frends.GooglePubSub.Publish)
     /// </summary>
     /// <param name="input">Input parameters.</param>
+    /// <param name="options">Options for error handling.</param>
     /// <param name="cancellationToken">Cancellation token, passed by Frends.</param>
     /// <returns>Return value containing successful message IDs and possible errors., 
     /// Object { 
+    ///     bool Success,
+    ///     Error Error,
     ///     List&lt;string&gt; MessageIDs, 
     ///     List&lt;
     ///         [   
@@ -49,27 +53,33 @@ public static class GooglePubSub
     ///     &gt; Errors 
     /// } 
     /// </returns>
-    public static async Task<Result> Publish([PropertyTab] Input input, CancellationToken cancellationToken)
+    public static async Task<Result> Publish([PropertyTab] Input input, [PropertyTab] Options options, CancellationToken cancellationToken)
     {
-        var client = CreatePublisherClient(input);
-        var messageIds = new List<string>();
-        var errors = new List<MessagePublishingError>();
-
-        foreach (var message in input.Messages)
+        try
         {
-            try
+            var client = CreatePublisherClient(input);
+            var messageIds = new List<string>();
+            var errors = new List<MessagePublishingError>();
+
+            foreach (var message in input.Messages)
             {
-                var msgId = await client.PublishAsync(message.ToPubSubMessage());
-                messageIds.Add(msgId);
+                try
+                {
+                    var msgId = await client.PublishAsync(message.ToPubSubMessage());
+                    messageIds.Add(msgId);
+                }
+                catch (Exception ex)
+                {
+                    errors.Add(new MessagePublishingError { Message = message, Error = ex.ToString() });
+                }
             }
-            catch (Exception ex)
-            {
-                errors.Add(new MessagePublishingError { Message = message, Error = ex.ToString() });
-            }
+            client.ShutdownAsync(cancellationToken).Wait(cancellationToken);
+            return new Result { Success = true, MessageIDs = messageIds, Errors = errors };
         }
-        client.ShutdownAsync(cancellationToken).Wait(cancellationToken);
-        var result = new Result { MessageIDs = messageIds, Errors = errors };
-        return result;
+        catch (Exception ex)
+        {
+            return ex.Handle(options);
+        }
     }
 
     private static PublisherClient CreatePublisherClient(Input input)

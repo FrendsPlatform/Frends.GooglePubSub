@@ -8,6 +8,20 @@ namespace Frends.GooglePubSub.Publish.Definitions;
 public class Result
 {
     /// <summary>
+    /// Indicates whether the overall publish operation completed successfully.
+    /// True when the batch operation completes and results are returned, even if some individual messages fail.
+    /// False only when a failure prevents the overall operation from completing.
+    /// </summary>
+    /// <example>true</example>
+    public bool Success { get; internal set; }
+
+    /// <summary>
+    /// Error information when the overall operation fails (ThrowErrorOnFailure is false).
+    /// Null when Success is true.
+    /// </summary>
+    public Error Error { get; internal set; }
+
+    /// <summary>
     /// IDs of successfully sent messages.
     /// </summary>
     /// <example>{ "12345", "54321" }</example>
