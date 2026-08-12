@@ -55,11 +55,12 @@ public static class GooglePubSub
     /// </returns>
     public static async Task<Result> Publish([PropertyTab] Input input, [PropertyTab] Options options, CancellationToken cancellationToken)
     {
+        var messageIds = new List<string>();
+        var errors = new List<MessagePublishingError>();
+        
         try
         {
             var client = CreatePublisherClient(input);
-            var messageIds = new List<string>();
-            var errors = new List<MessagePublishingError>();
 
             foreach (var message in input.Messages)
             {
@@ -78,7 +79,12 @@ public static class GooglePubSub
         }
         catch (Exception ex)
         {
-            return ex.Handle(options);
+            var result = ex.Handle(options);
+    
+            result.MessageIDs = messageIds;
+            result.Errors = errors;
+    
+            return result;
         }
     }
 
