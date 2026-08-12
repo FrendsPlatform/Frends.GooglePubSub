@@ -16,5 +16,6 @@ public class Error
     /// <summary>
     /// Additional exception information.
     /// </summary>
+    /// <example>System.Exception: An error occurred.</example>
     public Exception AdditionalInfo { get; set; }
 }
