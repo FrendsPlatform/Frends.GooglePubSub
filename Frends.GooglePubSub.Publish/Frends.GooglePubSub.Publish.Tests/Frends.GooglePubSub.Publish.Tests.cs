@@ -27,7 +27,7 @@ class Tests
             ProjectID = TestProjectId,
             TopicID = TestTopicId,
             ServiceAccountKeyJSON = string.Empty, // fileContent,
-            Messages = new []
+            Messages = new[]
             {
                 new Message
                 {
@@ -43,10 +43,10 @@ class Tests
                 }
             }
         }, new Options(), CancellationToken.None);
-            
+
         Assert.AreEqual(0, result.Errors.Count, string.Join(Environment.NewLine, result.Errors.Select(e => e.Error)));
         Assert.AreEqual(2, result.MessageIDs.Count);
-        foreach(var messageID in result.MessageIDs) Assert.NotNull(messageID);
+        foreach (var messageID in result.MessageIDs) Assert.NotNull(messageID);
     }
 
     [Test]

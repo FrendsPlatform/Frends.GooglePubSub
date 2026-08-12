@@ -57,7 +57,7 @@ public static class GooglePubSub
     {
         var messageIds = new List<string>();
         var errors = new List<MessagePublishingError>();
-        
+
         try
         {
             var client = CreatePublisherClient(input);
@@ -80,10 +80,10 @@ public static class GooglePubSub
         catch (Exception ex)
         {
             var result = ex.Handle(options);
-    
+
             result.MessageIDs = messageIds;
             result.Errors = errors;
-    
+
             return result;
         }
     }
