@@ -79,12 +79,7 @@ public static class GooglePubSub
         }
         catch (Exception ex)
         {
-            var result = ex.Handle(options);
-
-            result.MessageIDs = messageIds;
-            result.Errors = errors;
-
-            return result;
+            return ex.Handle(options, messageIds, errors);
         }
     }
 
