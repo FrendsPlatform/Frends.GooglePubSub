@@ -50,7 +50,7 @@ public static class GooglePubSub
     ///         ] Message, 
     ///         string Error
     ///         ]
-    ///     &gt; Errors 
+    ///     &gt; MessageErrors 
     /// } 
     /// </returns>
     public static async Task<Result> Publish([PropertyTab] Input input, [PropertyTab] Options options, CancellationToken cancellationToken)
