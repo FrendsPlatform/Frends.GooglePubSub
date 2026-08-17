@@ -11,13 +11,6 @@ internal class ErrorHandlerTest
 {
     private const string CustomErrorMessage = "CustomErrorMessage";
 
-    [SetUp]
-    public void SetUp()
-    {
-        // Unset emulator so the task will fail when trying to connect
-        Environment.SetEnvironmentVariable("PUBSUB_EMULATOR_HOST", null);
-    }
-
     private static Input InvalidInput() => new Input
     {
         ProjectID = "invalid-project",
