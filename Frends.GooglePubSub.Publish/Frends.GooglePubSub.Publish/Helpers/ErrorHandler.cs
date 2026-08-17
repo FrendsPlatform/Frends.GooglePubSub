@@ -1,17 +1,16 @@
 using System;
-using System.Collections.Generic;
 using Frends.GooglePubSub.Publish.Definitions;
 
 namespace Frends.GooglePubSub.Publish.Helpers;
 
 internal static class ErrorHandler
 {
-    internal static Result Handle(this Exception exception, Options options, List<string> messageIds = null, List<MessagePublishingError> errors = null, bool throwCanceled = true)
+    internal static Result Handle(this Exception exception, Options options, bool throwCanceled = true)
     {
         ThrowIfCanceled(exception, throwCanceled);
         if (options.ThrowErrorOnFailure) ThrowBaseException(exception, options.ErrorMessageOnFailure);
 
-        return ReturnResult(exception, options.ErrorMessageOnFailure, messageIds, errors);
+        return ReturnResult(exception, options.ErrorMessageOnFailure);
     }
 
     private static void ThrowIfCanceled(Exception exception, bool throwCanceled = true)
@@ -27,7 +26,7 @@ internal static class ErrorHandler
         throw new Exception(customMessage, exception);
     }
 
-    private static Result ReturnResult(Exception exception, string customMessage = null, List<string> messageIds = null, List<MessagePublishingError> errors = null)
+    private static Result ReturnResult(Exception exception, string customMessage = null)
     {
         var errorMessage = string.IsNullOrEmpty(customMessage)
             ? exception.Message
@@ -41,8 +40,6 @@ internal static class ErrorHandler
                 Message = errorMessage,
                 AdditionalInfo = exception,
             },
-            MessageIDs = messageIds,
-            Errors = errors,
         };
     }
 }

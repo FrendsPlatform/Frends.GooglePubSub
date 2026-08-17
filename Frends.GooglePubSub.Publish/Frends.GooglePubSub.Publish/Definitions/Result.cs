@@ -46,5 +46,5 @@ public class Result
     ///     "An error occurred while sending error to topic..."
     /// }
     /// </example>
-    public List<MessagePublishingError> Errors { get; internal set; }
+    public List<MessagePublishingError> MessageErrors { get; internal set; }
 }

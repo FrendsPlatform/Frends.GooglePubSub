@@ -75,11 +75,16 @@ public static class GooglePubSub
                 }
             }
             client.ShutdownAsync(cancellationToken).Wait(cancellationToken);
-            return new Result { Success = true, MessageIDs = messageIds, Errors = errors };
+            return new Result { Success = true, MessageIDs = messageIds, MessageErrors = errors };
         }
         catch (Exception ex)
         {
-            return ex.Handle(options, messageIds, errors);
+            var result = ex.Handle(options);
+
+            result.MessageIDs = messageIds;
+            result.MessageErrors = errors;
+
+            return result;
         }
     }
 
