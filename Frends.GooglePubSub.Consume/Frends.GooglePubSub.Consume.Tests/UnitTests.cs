@@ -1,10 +1,10 @@
-namespace Frends.GooglePubSub.Consume.Tests;
+﻿namespace Frends.GooglePubSub.Consume.Tests;
 
 using System;
 using System.Threading.Tasks;
 using Frends.GooglePubSub.Consume;
 using Frends.GooglePubSub.Consume.Definitions;
-using Frends.GooglePubSub.Consume.Tests.lib;
+using Frends.GooglePubSub.Consume.Tests.Lib;
 using NUnit.Framework;
 
 [TestFixture]

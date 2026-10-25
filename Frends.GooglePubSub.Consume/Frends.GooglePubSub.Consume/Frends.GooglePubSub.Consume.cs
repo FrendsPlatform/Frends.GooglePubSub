@@ -1,17 +1,18 @@
 ﻿namespace Frends.GooglePubSub.Consume;
 
-using Google.Api.Gax;
-using Google.Api.Gax.Grpc;
-using Google.Cloud.PubSub.V1;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Frends.GooglePubSub.Consume.Definitions;
+using Frends.GooglePubSub.Consume.Helpers;
+using Google.Api.Gax;
+using Google.Api.Gax.Grpc;
 using Google.Apis.Auth.OAuth2;
-using System.IO;
+using Google.Cloud.PubSub.V1;
 using Grpc.Core;
 
 /// <summary>
@@ -26,38 +27,50 @@ public static class GooglePubSub
     /// <param name="input">Input parameters.</param>
     /// <param name="options">Optional options.</param>
     /// <param name="cancellationToken">Cancellation token given by Frends.</param>
-    /// <returns>Object [ List&lt;OutputMessage&gt; Messages [ { string Data, Dictionary Attributes, string MessageId, DateTime PublishTime, string OrderingKey } ] } </returns>
+    /// <returns>object { bool Success, List&lt;OutputMessage&gt; Messages [ { string Data, Dictionary Attributes, string MessageId, DateTime PublishTime, string OrderingKey } ], object Error { string Message, Exception AdditionalInfo } }</returns>
     public static async Task<Result> Consume([PropertyTab] Input input, [PropertyTab] Options options, CancellationToken cancellationToken)
     {
-        var receivedMessages = new List<OutputMessage>();
-
-        var subscriberClient = await CreateSubscriberClient(input, cancellationToken);
-
-        var subscriptionName = new SubscriptionName(input.ProjectID, input.SubscriptionID);
-
-        var callSettings = new CallSettings(
-            cancellationToken,
-            Expiration.FromTimeout(TimeSpan.FromSeconds(options.Timeout)),
-            retry: null,
-            headerMutation: null,
-            writeOptions: null,
-            propagationToken: null);
-
         try
         {
-            var response = await subscriberClient.PullAsync(subscriptionName, maxMessages: options.MaxResults, callSettings).ConfigureAwait(false);
+            var receivedMessages = new List<OutputMessage>();
 
-            receivedMessages.AddRange(response.ReceivedMessages.Select(p => new OutputMessage(p.Message)));
+            var subscriberClient = await CreateSubscriberClient(input, cancellationToken);
 
-            if (options.Acknowledge && receivedMessages.Any())
-                await subscriberClient.AcknowledgeAsync(subscriptionName, response.ReceivedMessages.Select(msg => msg.AckId), cancellationToken).ConfigureAwait(false);
+            var subscriptionName = new SubscriptionName(input.ProjectID, input.SubscriptionID);
+
+            var callSettings = new CallSettings(
+                cancellationToken,
+                Expiration.FromTimeout(TimeSpan.FromSeconds(options.Timeout)),
+                retry: null,
+                headerMutation: null,
+                writeOptions: null,
+                propagationToken: null);
+
+            try
+            {
+                var response = await subscriberClient.PullAsync(subscriptionName, maxMessages: options.MaxResults, callSettings).ConfigureAwait(false);
+
+                receivedMessages.AddRange(response.ReceivedMessages.Select(p => new OutputMessage(p.Message)));
+
+                if (options.Acknowledge && receivedMessages.Any())
+                    await subscriberClient.AcknowledgeAsync(subscriptionName, response.ReceivedMessages.Select(msg => msg.AckId), cancellationToken).ConfigureAwait(false);
+            }
+            catch (RpcException ex) when (ex.StatusCode == StatusCode.DeadlineExceeded)
+            {
+                throw new ArgumentException($"DeadlineExceeded error while pulling messages from subscription: {ex.Message}.\nConsider increasing the timeout parameters.");
+            }
+
+            return new Result
+            {
+                Success = true,
+                Messages = receivedMessages,
+                Error = null,
+            };
         }
-        catch (RpcException ex) when (ex.StatusCode == StatusCode.DeadlineExceeded)
+        catch (Exception ex)
         {
-            throw new ArgumentException($"DeadlineExceeded error while pulling messages from subscription: {ex.Message}.\nConsider increasing the timeout parameters.");
+            return ex.Handle(options);
         }
-
-        return new Result(receivedMessages);
     }
 
     private static async Task<SubscriberServiceApiClient> CreateSubscriberClient(Input input, CancellationToken cancellationToken)

@@ -1,8 +1,8 @@
 ﻿namespace Frends.GooglePubSub.Consume.Definitions;
 
+using System.Linq;
 using Google.Cloud.PubSub.V1;
 using Google.Protobuf;
-using System.Linq;
 
 /// <summary>
 /// Message consumed from Google PubSub.
