@@ -1,12 +1,12 @@
-﻿namespace Frends.GooglePubSub.Consume.Tests.lib;
+﻿namespace Frends.GooglePubSub.Consume.Tests.Lib;
 
-using Google.Apis.Auth.OAuth2;
-using Google.Cloud.PubSub.V1;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using Frends.GooglePubSub.Consume.Definitions;
+using Google.Apis.Auth.OAuth2;
+using Google.Cloud.PubSub.V1;
 
 internal class Helper
 {
